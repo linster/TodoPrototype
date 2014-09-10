@@ -1,9 +1,14 @@
 package com.example.smtd;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.ListView;
 
 public class TodoList extends Activity {
 
@@ -11,6 +16,18 @@ public class TodoList extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo_list);
+		
+		/* Create a crappy array list of todoitems */
+		ArrayList<TItem> todoarray = new ArrayList<TItem>();
+		/* This is the wrong place to populate... */
+		todoarray.add(new TItem("Test", false, false));
+		todoarray.add(new TItem("Boris", false, false));
+		todoarray.add(new TItem("Doris", false, false));
+		/* Instantiate an adapter */
+		TodoAdapter adapter = new TodoAdapter(this, todoarray);
+		/* Get an instance of the ListView and attach the adapter */
+		ListView listView = (ListView) findViewById(R.id.listView1);
+		listView.setAdapter(adapter);
 	}
 
 	@Override
@@ -31,4 +48,5 @@ public class TodoList extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
 }

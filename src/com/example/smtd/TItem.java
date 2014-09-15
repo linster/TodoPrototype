@@ -1,8 +1,12 @@
 package com.example.smtd;
 import java.util.Date;
+import java.io.Serializable;
+public class TItem implements Serializable {
 
-public class TItem {
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/* Stores whether the current item is checked */
 	private boolean isChecked;
 	
@@ -25,6 +29,7 @@ public class TItem {
 	
 	
 	/* Date stamp for creation */
+		//transient to make serialization work?
 		Date created;
 	/* Message of the TODO */
 		private String message = new String();
@@ -55,4 +60,9 @@ public class TItem {
 			
 		}
 	
+
+		/* Serialization functions */
+		/* http://www.onjava.com/pub/a/onjava/excerpt/JavaRMI_10/?page=3 */
+		
+		
 }

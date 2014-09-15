@@ -48,7 +48,7 @@ public class TodoAdapter extends ArrayAdapter<TItem> {
 				check.setChecked(!currentcheckstate);
 				item.SetCheck(!currentcheckstate);
 				Context c = v.getContext();
-				Toast.makeText(c, "Checked!" + item.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(c, "Checked!" + item.getMessage(), Toast.LENGTH_SHORT).show();
 			}
        });
        

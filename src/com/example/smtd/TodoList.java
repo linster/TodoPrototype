@@ -89,28 +89,40 @@ public class TodoList extends Activity {
 
 		// deserialize the object
 		
-		SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-		String SerializedList = sharedPref.getString("ListData", "Blob not found");
 		
-		if (SerializedList.equalsIgnoreCase("Blob not found")) {
-		     Log.e("Unpack", "Blob not found");
-		}
+		
+		File ListDataDescriptor = new File(getFilesDir(), "ListData");
+		InputStream in = null;
+		
+		try {
+			in = new BufferedInputStream(new FileInputStream(ListDataDescriptor));
+		} catch(FileNotFoundException f) {
+			Log.e("TodoList.java UnPack", "ListData file not found");
+			//Try to create the file.
+			File listdata = new File(getFilesDir(), "ListData");
+		} 
 		
 		
 		 try {
-		     byte b[] = SerializedList.getBytes(); 
-		     ByteArrayInputStream bi = new ByteArrayInputStream(b);
-		     ObjectInputStream si = new ObjectInputStream(bi);
+		     ObjectInputStream si = new ObjectInputStream(in);
 		     ArrayList<TItem> obj = (ArrayList<TItem>) si.readObject();
 		     this.todoarray = obj;
 		     si.close();
 		     return true;
 		 } catch (Exception e) {
-		     System.out.println(e + e.getMessage());
-		     
+		     System.out.println(e + "\n\n" + e.getMessage());
 		     Log.e("Unpack", "Exception");
-		     Log.e("Unpack", SerializedList);
-		 }
+
+		 }finally {
+				if (in != null) {
+					try {
+						in.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
 		return false;
 	}
 	
@@ -121,36 +133,40 @@ public class TodoList extends Activity {
 		
 		/* http://beginnersbook.com/2013/12/how-to-serialize-arraylist-in-java/ */
 		
-		// Set up a SharedPreferences file with one key containing
-		// a Java-serialized binary blob
-		
-		SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor = sharedPref.edit();
 		
 		/* Need to serialize an object to a string 
-		 * for SharedPreferences.
 		 */
 		// http://stackoverflow.com/questions/8887197/reliably-convert-any-object-to-string-and-then-back-again
 		// Creative Commons Attribution Share Alike license for the code
 		
-		String SerializedList = "";
+		byte[] SerializedList;
 		
 		try { 
 			ByteArrayOutputStream bo = new ByteArrayOutputStream();
 			ObjectOutputStream so = new ObjectOutputStream(bo);
 			so.writeObject(this.todoarray);
 			so.flush();
-			SerializedList = bo.toString();
+			SerializedList = bo.toByteArray();
 			so.close();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 			return false;
 		}
 		
-		editor.putString("ListData", SerializedList);
-		editor.commit();
+		String filename = "ListData";
+		FileOutputStream fos;
 		
-		return true;
+		try {
+			fos = openFileOutput(filename,  Context.MODE_PRIVATE);
+			fos.write(SerializedList);
+			fos.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.e("TodoList Activity PackData", "Exception in filewriting");
+			return false;
+		}
+		
 	}
 
 }

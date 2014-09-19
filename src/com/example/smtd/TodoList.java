@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,12 +12,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 
 
-public class TodoList extends Activity {
+public class TodoList extends FragmentActivity {
 
 	private ArrayList<TItem> todoarray = new ArrayList<TItem>();
 
@@ -32,6 +36,7 @@ public class TodoList extends Activity {
 		
 		if (UnPackData()) {
 			//Unpacking sucessful
+			Log.d("TodoList Activity", "Unpacking Successful");
 		} else {
 			//Unpacking unsucessful. Probably record to log?
 			Log.e("TodoList Activity", "Failed to unpack data");
@@ -56,7 +61,9 @@ public class TodoList extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.todo_list, menu);
-		return true;
+	    return super.onCreateOptionsMenu(menu);
+
+		//return true;
 	}
 
 	@Override
@@ -65,10 +72,25 @@ public class TodoList extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
+		switch (id) {
+			case R.id.action_settings:
+				return true;
+		
+			case R.id.action_add_item:
+				openAddItemDialog();
 		}
+		
+		
+		
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private void openAddItemDialog() {
+		/* Instantiate the AddItemDialogFragment
+		 * as per  http://developer.android.com/guide/topics/ui/dialogs.html
+		 */
+		AddItemDialogFragment aid = new AddItemDialogFragment();
+		aid.show(getFragmentManager(), "AddItemF");
 	}
 	
 	@Override
@@ -166,6 +188,17 @@ public class TodoList extends Activity {
 			Log.e("TodoList Activity PackData", "Exception in filewriting");
 			return false;
 		}
+		
+	}
+
+	public void addItem(AddItemDialogFragment aidf) {
+		/* Callback from the AddItemDialog Fragment */
+		// TODO Auto-generated method stub
+		
+		Dialog d = aidf.getDialog();
+		EditText b = (EditText) d.findViewById(R.id.AddItem_editText);
+		this.todoarray.add(new TItem(b.getText().toString(), false, false));
+		PackData();
 		
 	}
 

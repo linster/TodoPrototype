@@ -2,6 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.smtd.TodoList" >
 
+    
+       <item android:id="@+id/action_add_item"
+          android:icon="@drawable/ic_action_new"
+          android:title="Add Item"
+          android:visible="true"
+          android:showAsAction="ifRoom"  />
+   
+    
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

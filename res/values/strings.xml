@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">smtd</string>
+    <string name="app_name">Smartynk-TODO</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+    <string name="AddItem_title">Add Todo Item</string>
+	<string name="ok">Ok</string>
+	<string name="cancel">Cancel</string>
 </resources>

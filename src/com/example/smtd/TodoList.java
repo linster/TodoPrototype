@@ -3,14 +3,24 @@ package com.example.smtd;
 import java.io.*;
 import java.util.ArrayList;
 
+import com.example.smtd.datahandler.FileBasedDataStore;
+import com.example.smtd.multiselect.TContextBar;
+import com.example.smtd.multiselect.TMultiChoiceListener;
+
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -20,41 +30,65 @@ import android.util.Log;
 
 
 
-public class TodoList extends FragmentActivity {
+public class TodoList extends ListActivity {
 
 	private ArrayList<TItem> todoarray = new ArrayList<TItem>();
-
+	private TMultiChoiceListener tMultiChoiceListener = new TMultiChoiceListener();
+	protected Object mActionMode;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_todo_list);
+		//setContentView(R.id.list);
 		
-		/* Create a crappy array list of todoitems */
 		
 		//Unserialize existing data from a store, if the store exists.
-		
 		if (UnPackData()) {
 			//Unpacking sucessful
 			Log.d("TodoList Activity", "Unpacking Successful");
 		} else {
-			//Unpacking unsucessful. Probably record to log?
+			//Unpacking unsucessful. If the file doesn't exist, then UnPackData() should
+			//create it. Thus, UnPackData() should work next time. Which is why this case
+			//doesn't freak out.
 			Log.e("TodoList Activity", "Failed to unpack data");
-			
-			//Put in some test data.
-			todoarray.add(new TItem("Test", false, false));
-			todoarray.add(new TItem("Boris", false, false));
-			todoarray.add(new TItem("Doris", false, false));
-			todoarray.add(new TItem("Jeff", false, false));
-			todoarray.add(new TItem("Steve", false, false));	
 		}
 		
+		/* Instantiate a TContextBar utility class that holds an ActionModeCallback */
+		final TContextBar tContextBar = new TContextBar();
 		
 		/* Instantiate an adapter */
 		TodoAdapter adapter = new TodoAdapter(this, todoarray);
 		/* Get an instance of the ListView and attach the adapter */
-		ListView listView = (ListView) findViewById(R.id.listView1);
+		//Also need to add a longclick listener... probably shouldn't do this in 
+		//the onCreate of activity for 301-ness.
+		ListView listView = getListView();
 		listView.setAdapter(adapter);
+		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		
+		getListView().setMultiChoiceModeListener(tMultiChoiceListener);
+		getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View view,
+					int position, long arg3) {
+				// TODO Auto-generated method stub
+				getListView().setItemChecked(position, true);
+				
+				 if (mActionMode != null) {
+			          //return false;
+			        }
+				
+				Log.w("onItemLongClick Listener", "Got here");
+				TodoList.this.startActionMode(tMultiChoiceListener);
+				//view.setSelected(true);
+				return true;
+			}
+			
+		});
+		
+		//Debugging to see if the layout works
+		TodoList.this.startActionMode(tMultiChoiceListener);
+		
+		
 	}
 
 	@Override
@@ -105,89 +139,22 @@ public class TodoList extends FragmentActivity {
 	
 	
 	private boolean UnPackData() {
-		/* Unpack the serialized ArrayList into the class variable. */
-		/* Return True if sucessful */
-		// http://stackoverflow.com/questions/8887197/reliably-convert-any-object-to-string-and-then-back-again
-
-		// deserialize the object
+		FileBasedDataStore fbds = new FileBasedDataStore(TodoList.this);
+		ArrayList<TItem> temparray = fbds.UnPackData();
+		if (temparray == null){
+			Log.e("Unpack Wrapper", "Array returned was null. Using old data");
+			return false;
+		} else {
+			todoarray = temparray;
+			return true;
+		}
 		
-		
-		
-		File ListDataDescriptor = new File(getFilesDir(), "ListData");
-		InputStream in = null;
-		
-		try {
-			in = new BufferedInputStream(new FileInputStream(ListDataDescriptor));
-		} catch(FileNotFoundException f) {
-			Log.e("TodoList.java UnPack", "ListData file not found");
-			//Try to create the file.
-			File listdata = new File(getFilesDir(), "ListData");
-		} 
-		
-		
-		 try {
-		     ObjectInputStream si = new ObjectInputStream(in);
-		     ArrayList<TItem> obj = (ArrayList<TItem>) si.readObject();
-		     this.todoarray = obj;
-		     si.close();
-		     return true;
-		 } catch (Exception e) {
-		     System.out.println(e + "\n\n" + e.getMessage());
-		     Log.e("Unpack", "Exception");
-
-		 }finally {
-				if (in != null) {
-					try {
-						in.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		return false;
 	}
 	
 	private boolean PackData() {
-		/** Pack the in-memory ArrayList<TItem>. This serializes
-		 *  it to a shared preferences file.
-		 */
-		
-		/* http://beginnersbook.com/2013/12/how-to-serialize-arraylist-in-java/ */
-		
-		
-		/* Need to serialize an object to a string 
-		 */
-		// http://stackoverflow.com/questions/8887197/reliably-convert-any-object-to-string-and-then-back-again
-		// Creative Commons Attribution Share Alike license for the code
-		
-		byte[] SerializedList;
-		
-		try { 
-			ByteArrayOutputStream bo = new ByteArrayOutputStream();
-			ObjectOutputStream so = new ObjectOutputStream(bo);
-			so.writeObject(this.todoarray);
-			so.flush();
-			SerializedList = bo.toByteArray();
-			so.close();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-			return false;
-		}
-		
-		String filename = "ListData";
-		FileOutputStream fos;
-		
-		try {
-			fos = openFileOutput(filename,  Context.MODE_PRIVATE);
-			fos.write(SerializedList);
-			fos.close();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			Log.e("TodoList Activity PackData", "Exception in filewriting");
-			return false;
-		}
+		//Instantiate a FileBasedDataStore to handle this for us.
+		FileBasedDataStore fbds = new FileBasedDataStore(TodoList.this);
+		return fbds.PackData(todoarray);
 		
 	}
 

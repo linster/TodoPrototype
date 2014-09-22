@@ -6,10 +6,13 @@
 
     
     <CheckBox android:id="@+id/checkbox_checkitem"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Message"
-        android:onClick="onTODOChecked"/>
+        android:onClick="onTODOChecked"
+        android:focusable="false"
+        android:clickable="true"
+        android:descendantFocusability="blocksDescendants"/>
     <!-- String for text of checkbox is @string/whatever  -->
    
 

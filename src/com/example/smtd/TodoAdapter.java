@@ -3,9 +3,12 @@ package com.example.smtd;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.smtd.multiselect.TContextBar;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -51,6 +54,7 @@ public class TodoAdapter extends ArrayAdapter<TItem> {
 				Toast.makeText(c, "Checked!" + item.getMessage(), Toast.LENGTH_SHORT).show();
 			}
        });
+ 
        
        
        // Return the completed view to render on screen

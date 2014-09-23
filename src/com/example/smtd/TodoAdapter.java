@@ -39,6 +39,13 @@ public class TodoAdapter extends ArrayAdapter<TItem> {
        check.setText(item.getMessage());
        check.setChecked(item.GetCheck());
        
+       if (item.isSelected()){
+    	   convertView.setBackgroundColor(getContext().getResources().
+    			   getColor(android.R.color.holo_blue_dark));
+       } else {
+    	   convertView.setBackgroundColor(getContext().getResources().
+    			   getColor(android.R.color.background_light));
+       }
        //check.create onclick listener. 
        // In here, I have access to check.toggle() as well as item.properties
        

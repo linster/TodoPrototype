@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.example.smtd.datahandler.FileBasedDataStore;
 import com.example.smtd.multiselect.TContextBar;
+
 import com.example.smtd.multiselect.TMultiChoiceListener;
 
 import android.app.Activity;
@@ -74,6 +75,7 @@ public class TodoList extends ListActivity {
 		/* Need to pass the adapter to our TMultiChoice Listener so that it can
 		 * get id's
 		 */
+		
 		tMultiChoiceListener.setTodoAdapter(adapter);
 		
 		listView.setOnItemClickListener(new OnItemClickListener() {
@@ -113,7 +115,7 @@ public class TodoList extends ListActivity {
 			}
 			
 		});
-		
+		//getListView().getItemAtPosition(position).setBackgroundColor(color)
 		//Debugging to see if the layout works
 		//TodoList.this.startActionMode(tMultiChoiceListener);
 		

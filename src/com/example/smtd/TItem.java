@@ -7,6 +7,12 @@ public class TItem implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	
+	
+	
+	
+	
 	/* Stores whether the current item is checked */
 	private boolean isChecked;
 	
@@ -58,6 +64,16 @@ public class TItem implements Serializable {
 			this.SetArchive(isArchived);
 			this.setMessage(message);
 			
+		}
+
+		/* Is the item selected for multiview*/
+		private boolean isSelected;
+		public boolean isSelected() {
+			return isSelected;
+		}
+
+		public void setSelected(boolean isSelected) {
+			this.isSelected = isSelected;
 		}
 	
 

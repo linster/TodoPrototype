@@ -6,6 +6,8 @@ import com.example.smtd.R;
 import com.example.smtd.TodoAdapter;
 
 
+import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -22,10 +24,7 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 	
 	public void setTodoAdapter(TodoAdapter a) {
 		this.adapter = a;
-		tmSelectedItems = new TMSelectedItems(adapter);
 	}
-	
-	TMSelectedItems tmSelectedItems;
 	
 	
 	@Override
@@ -55,9 +54,15 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 
 	@Override
 	public void onDestroyActionMode(ActionMode mode) {
-		// TODO Auto-generated method stub
-		tmSelectedItems.emptyMap();
-		//clear background colour of all selected things.
+		// Cleanup our selected flag.
+
+		int position;
+		
+		for (position = 0; position < adapter.getCount(); position++){
+			adapter.getItem(position).setSelected(false);
+			adapter.notifyDataSetChanged();
+		}	
+		
 		
 	}
 
@@ -72,17 +77,13 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 			boolean checked) {
 		
 		//in here, update tmSelectedItems instance with data on what is selected
-		tmSelectedItems.setSelection(position, checked);
-		Log.d("onItemCheckedStateChanged", "Position " + String.valueOf(position) + 
-				" Id " + String.valueOf(id));
+		adapter.getItem(position).setSelected(checked);
+		adapter.notifyDataSetChanged();
 		
-		//also, change background color of the selected things.
-		if (tmSelectedItems.isSelected(position)) {
-			//Change colour to highlighted
-			
-		} else{
-			//Change colour to regular background
-		}
+		//Log.d("onItemCheckedStateChanged", "Position " + String.valueOf(position) + 
+		//		" Id " + String.valueOf(id));
+		
+
 	}
 
 }

@@ -10,10 +10,19 @@
           android:showAsAction="ifRoom"  />
    
     
+ 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:id="@+id/action_email_all"
+        android:orderInCategory="101"
         android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_email_all"/>
+    
+    <item
+        android:id="@+id/action_summarize"
+        android:orderInCategory="102"
+        android:showAsAction="never"
+        android:title="@string/action_summarize"/>
+    
+    
 
 </menu>

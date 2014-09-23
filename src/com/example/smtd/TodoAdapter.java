@@ -42,18 +42,7 @@ public class TodoAdapter extends ArrayAdapter<TItem> {
        //check.create onclick listener. 
        // In here, I have access to check.toggle() as well as item.properties
        
-       check.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				//check.toggle();
-				boolean currentcheckstate = item.GetCheck();
-				check.setChecked(!currentcheckstate);
-				item.SetCheck(!currentcheckstate);
-				Context c = v.getContext();
-				Toast.makeText(c, "Checked!" + item.getMessage(), Toast.LENGTH_SHORT).show();
-			}
-       });
+       
  
        
        

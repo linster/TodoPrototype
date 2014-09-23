@@ -5,6 +5,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="AddItem_title">Add Todo Item</string>
-	<string name="ok">Ok</string>
+	<string name="ok">OK</string>
 	<string name="cancel">Cancel</string>
+	<string name="action_email_all">Email All Items (incl. Archived)</string>
+	<string name="action_summarize">Summarize items</string>
 </resources>

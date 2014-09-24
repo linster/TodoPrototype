@@ -2,24 +2,26 @@ package com.example.smtd;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import com.example.smtd.datahandler.FileBasedDataStore;
 import com.example.smtd.multiselect.TContextBar;
 
 import com.example.smtd.multiselect.TMultiChoiceListener;
 
-import android.app.Activity;
+
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
+
 import android.os.Bundle;
-import android.view.ActionMode;
+
 import android.view.Menu;
-import android.view.MenuInflater;
+
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView.MultiChoiceModeListener;
+
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -27,8 +29,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
+
 import android.util.Log;
 
 
@@ -145,6 +146,24 @@ public class TodoList extends ListActivity {
 				break;
 			case R.id.action_summarize:
 				openSummaryDialog();
+				break;
+			case R.id.action_email_all:
+				Vector<Integer> allitems = new Vector<Integer>();
+				
+				//Lots of ugly code since BaseAdapter doesn't do hasNext()
+				for (Integer i = 0; i < getListAdapter().getCount(); i++){
+					allitems.add(i);
+				}
+				
+				String emailmessage = ((TodoAdapter)getListAdapter()).getMultipleBodies(allitems); 
+				Intent i = new Intent(Intent.ACTION_SEND);
+				i.setType("message/rfc822");
+				i.putExtra(Intent.EXTRA_TEXT, emailmessage);
+				try {
+					startActivity(Intent.createChooser(i, "Send TODO items"));
+				} catch (android.content.ActivityNotFoundException e){
+					Log.w("Action_email in TodoActivity", "caught ActivityNotFoundException");
+				}
 				break;
 		}
 		

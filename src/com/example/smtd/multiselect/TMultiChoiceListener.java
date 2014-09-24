@@ -80,7 +80,7 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 				i.setType("message/rfc822");
 				i.putExtra(Intent.EXTRA_TEXT, emailmessage);
 				try {
-					adapter.getContext().startActivity(Intent.createChooser(i, "Email todo items"));
+					adapter.getContext().startActivity(Intent.createChooser(i, "Send items"));
 				} catch (android.content.ActivityNotFoundException e){
 					Log.w("Action_email in TMC", "caught ActivityNotFoundException");
 				}

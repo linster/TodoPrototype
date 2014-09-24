@@ -2,6 +2,7 @@ package com.example.smtd;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import com.example.smtd.multiselect.TContextBar;
 
@@ -55,6 +56,28 @@ public class TodoAdapter extends ArrayAdapter<TItem> {
        
        // Return the completed view to render on screen
        return convertView;
+		
+	}
+	
+	public String getMultipleBodies(Vector<Integer> positions) {
+		/** Get the bodies of the TItems, concatenate bodies and 
+		 *  return as a String. Intended for an email body.
+		 * 
+		 */
+		
+		String returnstring = new String();
+		
+		for (Integer key: positions) {
+			
+			if (this.getItem(key).GetCheck()){
+				returnstring += "[X]";
+			} else {
+				returnstring += "[ ]";
+			}
+			returnstring += ( " " + this.getItem(key).getMessage() + "\n\n");
+		}
+		
+		return returnstring;
 		
 	}
 	

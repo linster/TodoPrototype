@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import com.example.smtd.R;
 import com.example.smtd.TItem;
@@ -65,7 +66,25 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 				
 				
 			case R.id.action_email:
-				//emailSelectedItems()
+				
+				
+				Vector<Integer> positions = new Vector<Integer>();
+				for (Map.Entry<Integer, Boolean> entry : selectedpositions.entrySet()){
+					if (entry.getValue()) {
+						positions.add(entry.getKey());
+					}
+				}
+				
+				String emailmessage = adapter.getMultipleBodies(positions);
+				Intent i = new Intent(Intent.ACTION_SEND);
+				i.setType("message/rfc822");
+				i.putExtra(Intent.EXTRA_TEXT, emailmessage);
+				try {
+					adapter.getContext().startActivity(Intent.createChooser(i, "Email todo items"));
+				} catch (android.content.ActivityNotFoundException e){
+					Log.w("Action_email in TMC", "caught ActivityNotFoundException");
+				}
+				
 				mode.finish();
 			
 			case R.id.action_toggle_archive:

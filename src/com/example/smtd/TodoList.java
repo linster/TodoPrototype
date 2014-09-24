@@ -142,9 +142,10 @@ public class TodoList extends ListActivity {
 		switch (id) {
 			case R.id.action_add_item:
 				openAddItemDialog();
+				break;
 			case R.id.action_summarize:
 				openSummaryDialog();
-		
+				break;
 		}
 		
 		return super.onOptionsItemSelected(item);

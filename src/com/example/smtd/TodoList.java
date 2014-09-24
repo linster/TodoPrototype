@@ -142,11 +142,17 @@ public class TodoList extends ListActivity {
 		switch (id) {
 			case R.id.action_add_item:
 				openAddItemDialog();
+			case R.id.action_summarize:
+				openSummaryDialog();
+		
 		}
 		
-		
-		
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private void openSummaryDialog() {
+		SummaryViewDialogFragment svdf = new SummaryViewDialogFragment();
+		svdf.show(getFragmentManager(), "SummaryDF");
 	}
 	
 	private void openAddItemDialog() {

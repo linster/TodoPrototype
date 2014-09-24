@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:orientation="vertical">
+    
+    
+    <TextView 
+    	android:id="@+id/Summary_num_checked"
+    	android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+   		android:text="Total number items checked:" 
+    />
+     <TextView 
+    	android:id="@+id/Summary_num_unchecked"
+    	android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+   		android:text="Total number items unchecked:" 
+    />    
+    <TextView 
+    	android:id="@+id/Summary_num_archived"
+    	android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+   		android:text="Total number items archived:" 
+    />   
+    <TextView 
+    	android:id="@+id/Summary_num_ar_checked"
+    	android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+   		android:text="Number of checked archived items" 
+    />
+    <TextView 
+    	android:id="@+id/Summary_ar_unchecked"
+    	android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+   		android:text="Number of unchecked archive items" 
+    />
+
+
+</TableLayout>

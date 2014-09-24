@@ -59,7 +59,7 @@ public class TContextBar {
 	    // Called when the user exits the action mode
 	    @Override
 	    public void onDestroyActionMode(ActionMode mode) {
-	        //setmActionMode(null);
+	        //Need to call PackData() somehow to update the file.
 	    }
 	};
 

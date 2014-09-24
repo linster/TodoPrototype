@@ -17,6 +17,7 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 import android.widget.AbsListView.MultiChoiceModeListener;
 
 
@@ -54,15 +55,31 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 						itemstodelete.add(adapter.getItem(entry.getKey()));
 					}
 				}
-				
+				//Need to do it this way since the position of all the items will
+				//change as the for loop runs
 				for (TItem todoitem : itemstodelete) {
 					adapter.remove(todoitem);
 				}
 				adapter.notifyDataSetChanged();
 				mode.finish();
+				
+				
 			case R.id.action_email:
 				//emailSelectedItems()
 				mode.finish();
+			
+			case R.id.action_toggle_archive:
+				for (Map.Entry<Integer, Boolean> entry : selectedpositions.entrySet()){
+					if (entry.getValue()){ 
+						//Item in selected positions map and actually selected (v = true)
+						TItem archiveitem = adapter.getItem(entry.getKey());
+						boolean currentArchiveVal = archiveitem.GetArchive();
+						archiveitem.SetArchive(!currentArchiveVal);
+					}
+				}
+				adapter.notifyDataSetChanged();
+				mode.finish();
+				
 			default:
 				return false;
 		}

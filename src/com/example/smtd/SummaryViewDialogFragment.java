@@ -50,7 +50,7 @@ public class SummaryViewDialogFragment extends DialogFragment {
 		ListAdapter unArchiveAdapter = ((TodoList)getActivity()).unarchiveAdapter;
 		
 		for (int position = 0; position < archiveAdapter.getCount(); position++){
-			if ( ((TItem)archiveAdapter.getItem(position)).GetCheck()){
+			if ( ((TItem)unArchiveAdapter.getItem(position)).GetCheck()){
 				uchecked++;
 			} else {
 				utotalunchecked++;
@@ -60,7 +60,7 @@ public class SummaryViewDialogFragment extends DialogFragment {
 		archived = archiveAdapter.getCount();
 		
 		for (int position = 0; position < unArchiveAdapter.getCount(); position++){
-			if ( ((TItem)unArchiveAdapter.getItem(position)).GetCheck()){
+			if ( ((TItem)archiveAdapter.getItem(position)).GetCheck()){
 				ar_checked++;
 			} else {
 				ar_unchecked++;
@@ -69,19 +69,19 @@ public class SummaryViewDialogFragment extends DialogFragment {
 
 		
 		((TextView)infoView.findViewById(R.id.Summary_num_checked))
-			.setText("Total Number of unarchived TODO items checked: " + String.valueOf(uchecked));
+			.setText("Uunarchived TODO items checked: " + String.valueOf(uchecked));
 	
 		((TextView)infoView.findViewById(R.id.Summary_num_unchecked))
-		.setText("Total Number of unarchived TODO items unchecked: " + String.valueOf(utotalunchecked));
+		.setText("Unarchived TODO items unchecked: " + String.valueOf(utotalunchecked));
 		
 		((TextView)infoView.findViewById(R.id.Summary_num_archived))
-		.setText("Total Number of archived TODO items: " + String.valueOf(archived));
+		.setText("Archived TODO items: " + String.valueOf(archived));
 		
 		((TextView)infoView.findViewById(R.id.Summary_num_ar_checked))
-		.setText("Total Number of archived items checked: " + String.valueOf(ar_checked));
+		.setText("Archived items checked: " + String.valueOf(ar_checked));
  	
 		((TextView)infoView.findViewById(R.id.Summary_ar_unchecked))
-		.setText("Total Number of archived items unchecked: " + String.valueOf(ar_unchecked));
+		.setText("Archived items unchecked: " + String.valueOf(ar_unchecked));
  	
 	}
 }

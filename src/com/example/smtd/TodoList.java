@@ -194,11 +194,13 @@ public class TodoList extends ListActivity {
 		// reminder.
 		if (this.showingArchived){
 			toastext = "Now showing archived items";
+			tMultiChoiceListener.setTodoAdapter(archiveAdapter);
 			this.dataFileUsed = this.archivedFile;
 			this.getActionBar().setIcon(R.drawable.ic_launcher_2);
 			setListAdapter(archiveAdapter);
 		} else {
 			toastext = "Now showing unarchived items";
+			tMultiChoiceListener.setTodoAdapter(unarchiveAdapter);
 			this.dataFileUsed = this.unarchivedFile;
 			this.getActionBar().setIcon(R.drawable.ic_launcher);
 			setListAdapter(unarchiveAdapter);

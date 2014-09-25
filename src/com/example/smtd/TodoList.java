@@ -94,13 +94,14 @@ public class TodoList extends ListActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
+				Log.d("onItemClick listenter", "called");
 				TItem item = (TItem) getListAdapter().getItem(position);					
 				CheckBox check = (CheckBox) view.findViewById(R.id.checkbox_checkitem);
 				boolean currentcheckstate = item.GetCheck();
 				check.setChecked(!currentcheckstate);
 				item.SetCheck(!currentcheckstate);
 				Context c = view.getContext();
-				Toast.makeText(view.getContext(), "Checked!" + item.getMessage(), Toast.LENGTH_SHORT).show();
+				//Toast.makeText(view.getContext(), "Checked!" + item.getMessage(), Toast.LENGTH_SHORT).show();
 				PackData();
 			}
 		});
@@ -139,7 +140,6 @@ public class TodoList extends ListActivity {
 		} else {
 			this.tMultiChoiceListener.setTodoAdapter(unarchiveAdapter);
 		}
-		onContentChanged();
 		
 	}
 	
@@ -259,9 +259,15 @@ public class TodoList extends ListActivity {
 	private boolean PackData() {
 		//Instantiate a FileBasedDataStore to handle this for us.
 		FileBasedDataStore fbds = new FileBasedDataStore(TodoList.this);
+		
+		boolean a = false;
+		boolean b = false;
+		
+		
 		//Pack all the data
-			return fbds.PackData(archived, archivedFile) &&
-			fbds.PackData(unarchived, unarchivedFile);
+			a = fbds.PackData(archived, archivedFile);
+			b = fbds.PackData(unarchived, unarchivedFile);
+			return a&&b;
 		//TODO 
 			//This doesn't actually Pack the data for some reason.
 	}

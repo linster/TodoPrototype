@@ -67,9 +67,8 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 				}
 				adapter.notifyDataSetChanged();
 				mode.finish();
-				
-				
-			case R.id.action_email:
+				return true;
+		case R.id.action_email:
 				
 				
 				Vector<Integer> positions = new Vector<Integer>();
@@ -90,10 +89,9 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 				} catch (android.content.ActivityNotFoundException e){
 					Log.w("Action_email in TMC", "caught ActivityNotFoundException");
 				}
-				
 				mode.finish();
-			
-			case R.id.action_toggle_archive:
+				return true;
+		case R.id.action_toggle_archive:
 				for (Map.Entry<Integer, Boolean> entry : selectedpositions.entrySet()){
 					if (entry.getValue()){ 
 						//Item in selected positions map and actually selected (v = true)
@@ -104,8 +102,8 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 				}
 				adapter.notifyDataSetChanged();
 				mode.finish();
-				
-			default:
+				return true;
+		default:
 				return false;
 		}
 		

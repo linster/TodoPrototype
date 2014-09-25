@@ -238,15 +238,19 @@ public class TodoList extends ListActivity {
 		FileBasedDataStore fbds = new FileBasedDataStore(TodoList.this);
 		
 		ArrayList<TItem> temparray = fbds.UnPackData(dataFileUsed);
+		
 		if (temparray == null){
 			Log.e("Unpack Wrapper", "Array returned was null. Using old data");
 			return false;
 		} else {
 			if (showingArchived){
-				archived = temparray;
+				archiveAdapter.clear();
+				archiveAdapter.addAll(temparray);
 			} else {
-				unarchived = temparray;
+				unarchiveAdapter.clear();
+				unarchiveAdapter.addAll(temparray);
 			}
+			
 			return true;
 		}
 		
@@ -258,7 +262,8 @@ public class TodoList extends ListActivity {
 		//Pack all the data
 			return fbds.PackData(archived, archivedFile) &&
 			fbds.PackData(unarchived, unarchivedFile);
-			
+		//TODO 
+			//This doesn't actually Pack the data for some reason.
 	}
 
 	public void addItem(AddItemDialogFragment aidf) {

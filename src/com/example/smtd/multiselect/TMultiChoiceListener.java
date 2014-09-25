@@ -30,11 +30,15 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 	
 	
 	private TodoAdapter adapter;
-	
+
 	
 	
 	public void setTodoAdapter(TodoAdapter a) {
+		if (a == null) {
+			throw new NullPointerException("Adapter passed to TodoAdapter was null");
+		}
 		this.adapter = a;
+		
 	}
 	
 	
@@ -75,10 +79,12 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 					}
 				}
 				
+				
 				String emailmessage = adapter.getMultipleBodies(positions);
 				Intent i = new Intent(Intent.ACTION_SEND);
 				i.setType("message/rfc822");
 				i.putExtra(Intent.EXTRA_TEXT, emailmessage);
+				
 				try {
 					adapter.getContext().startActivity(Intent.createChooser(i, "Send items"));
 				} catch (android.content.ActivityNotFoundException e){

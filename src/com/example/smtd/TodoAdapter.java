@@ -1,12 +1,15 @@
 package com.example.smtd;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import com.example.smtd.multiselect.TContextBar;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -20,6 +23,8 @@ public class TodoAdapter extends ArrayAdapter<TItem> {
 /* Guide:
  * https://github.com/thecodepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
  */
+	
+	
 	public TodoAdapter(Context context, ArrayList<TItem> objects) {
 		super(context, R.layout.tditemlayout, objects);
 		// TODO Auto-generated constructor stub
@@ -47,12 +52,7 @@ public class TodoAdapter extends ArrayAdapter<TItem> {
     	   convertView.setBackgroundColor(getContext().getResources().
     			   getColor(android.R.color.background_light));
        }
-       //check.create onclick listener. 
-       // In here, I have access to check.toggle() as well as item.properties
-       
-       
- 
-       
+
        
        // Return the completed view to render on screen
        return convertView;
@@ -77,8 +77,24 @@ public class TodoAdapter extends ArrayAdapter<TItem> {
 			returnstring += ( " " + this.getItem(key).getMessage() + "\n\n");
 		}
 		
-		return returnstring;
-		
+		return returnstring;	
 	}
+	
+	public String getAllBodies(Vector<Integer> positions) {
+		String returnstring = new String();
+		
+		for (Integer key: positions) {
+			// Need to call super. to get all items
+			if (super.getItem(key).GetCheck()){
+				returnstring += "[X]";
+			} else {
+				returnstring += "[ ]";
+			}
+			returnstring += ( " " + this.getItem(key).getMessage() + "\n\n");
+		}
+		return returnstring;
+	}
+	
+
 	
 }

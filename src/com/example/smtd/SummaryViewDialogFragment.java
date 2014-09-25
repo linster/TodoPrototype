@@ -40,45 +40,39 @@ public class SummaryViewDialogFragment extends DialogFragment {
 
 	public void populateInformation(View infoView) {
 		
-		int checked = 0;
-		int totalunchecked = 0;
+		int uchecked = 0;
+		int utotalunchecked = 0;
 		int archived = 0;
 		int ar_checked = 0;
 		int ar_unchecked = 0;
 		
-		ListAdapter tdla = ((TodoList)getActivity()).getListAdapter(); 
+		ListAdapter archiveAdapter = ((TodoList)getActivity()).archiveAdapter;
+		ListAdapter unArchiveAdapter = ((TodoList)getActivity()).unarchiveAdapter;
 		
-		int position = 0;
-		for (position = 0; position < tdla.getCount(); position++){
-			
-			if ( ((TItem)tdla.getItem(position)).GetCheck() ) {
-				checked++;
+		for (int position = 0; position < archiveAdapter.getCount(); position++){
+			if ( ((TItem)archiveAdapter.getItem(position)).GetCheck()){
+				uchecked++;
 			} else {
-				totalunchecked++;
-			}
-			
-			if ( ((TItem)tdla.getItem(position)).GetArchive()  ){
-				archived++;
-			}
-			
-			if (      ((TItem)tdla.getItem(position)).GetArchive()
-				   && ((TItem)tdla.getItem(position)).GetCheck()
-				){
-				ar_checked++;
-			}
-
-			if (       ((TItem)tdla.getItem(position)).GetArchive()
-				   && !((TItem)tdla.getItem(position)).GetCheck()
-				){
-				ar_unchecked++;
+				utotalunchecked++;
 			}
 		}
 		
+		archived = archiveAdapter.getCount();
+		
+		for (int position = 0; position < unArchiveAdapter.getCount(); position++){
+			if ( ((TItem)unArchiveAdapter.getItem(position)).GetCheck()){
+				ar_checked++;
+			} else {
+				ar_unchecked++;
+			}
+		}
+
+		
 		((TextView)infoView.findViewById(R.id.Summary_num_checked))
-			.setText("Total Number of TODO items checked: " + String.valueOf(checked));
+			.setText("Total Number of unarchived TODO items checked: " + String.valueOf(uchecked));
 	
 		((TextView)infoView.findViewById(R.id.Summary_num_unchecked))
-		.setText("Total Number of TODO items unchecked: " + String.valueOf(totalunchecked));
+		.setText("Total Number of unarchived TODO items unchecked: " + String.valueOf(utotalunchecked));
 		
 		((TextView)infoView.findViewById(R.id.Summary_num_archived))
 		.setText("Total Number of archived TODO items: " + String.valueOf(archived));

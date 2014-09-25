@@ -27,10 +27,10 @@ public class FileBasedDataStore extends ItemDataStore {
 		this.ctx = ctx;
 	}
 	
-	private String filename = "ListData";
+	
 	
 	@Override
-	public ArrayList<TItem> UnPackData() {
+	public ArrayList<TItem> UnPackData(String filename) {
 		/* Unpack the serialized ArrayList into the class variable. */
 		/* Return True if sucessful */
 		// http://stackoverflow.com/questions/8887197/reliably-convert-any-object-to-string-and-then-back-again
@@ -39,7 +39,7 @@ public class FileBasedDataStore extends ItemDataStore {
 		
 		
 		
-		File ListDataDescriptor = new File(ctx.getFilesDir(), "ListData");
+		File ListDataDescriptor = new File(ctx.getFilesDir(), filename);
 		InputStream in = null;
 		
 		try {
@@ -75,7 +75,7 @@ public class FileBasedDataStore extends ItemDataStore {
 	}
 
 	@Override
-	public boolean PackData(ArrayList<TItem> source) {
+	public boolean PackData(ArrayList<TItem> source, String filename) {
 		/** Pack the in-memory ArrayList<TItem>. This serializes
 		 *  it to a shared preferences file.
 		 */
@@ -106,7 +106,7 @@ public class FileBasedDataStore extends ItemDataStore {
 		FileOutputStream fos;
 		
 		try {
-			fos = ctx.openFileOutput(this.filename,  Context.MODE_PRIVATE);
+			fos = ctx.openFileOutput(filename,  Context.MODE_PRIVATE);
 			fos.write(SerializedList);
 			fos.close();
 			return true;

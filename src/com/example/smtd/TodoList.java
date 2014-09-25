@@ -36,8 +36,22 @@ import android.util.Log;
 
 public class TodoList extends ListActivity {
 
-	private ArrayList<TItem> todoarray = new ArrayList<TItem>();
-	private TMultiChoiceListener tMultiChoiceListener = new TMultiChoiceListener();
+	private ArrayList<TItem> unarchived = new ArrayList<TItem>();
+	private ArrayList<TItem> archived = new ArrayList<TItem>();
+	
+	private boolean showingArchived;
+	
+	//String that holds which file we're using for data
+	private String dataFileUsed = new String();
+	final private String unarchivedFile = "unarchived";
+	final private String archivedFile = "archived";
+	
+	
+	//Adapters for both lists
+	TodoAdapter archiveAdapter;
+	TodoAdapter unarchiveAdapter;
+	
+	private TMultiChoiceListener tMultiChoiceListener;
 	
 	/* When true, this overrides the onItemClick listener so that clicking
 	 * on a checkbox changes selection state for the CAB, not actually checking 
@@ -49,7 +63,13 @@ public class TodoList extends ListActivity {
 		super.onCreate(savedInstanceState);
 		//setContentView(R.id.list);
 		
-		/* Initialize the isCABactive flag to false */
+		showingArchived = false;
+		
+		this.archiveAdapter = new TodoAdapter(this, archived);
+		this.unarchiveAdapter = new TodoAdapter(this, unarchived);
+		
+		this.tMultiChoiceListener = new TMultiChoiceListener();
+		this.dataFileUsed = this.unarchivedFile;
 		
 		//Unserialize existing data from a store, if the store exists.
 		if (UnPackData()) {
@@ -62,24 +82,14 @@ public class TodoList extends ListActivity {
 			Log.e("TodoList Activity", "Failed to unpack data");
 		}
 		
-		/* Instantiate a TContextBar utility class that holds an ActionModeCallback */
-		final TContextBar tContextBar = new TContextBar();
+		setListAdapter(this.unarchiveAdapter);
 		
-		/* Instantiate an adapter */
-		TodoAdapter adapter = new TodoAdapter(this, todoarray);
-		/* Get an instance of the ListView and attach the adapter */
-		//Also need to add a longclick listener... probably shouldn't do this in 
-		//the onCreate of activity for 301-ness.
-		ListView listView = getListView();
-		setListAdapter(adapter);
-		
-		/* Need to pass the adapter to our TMultiChoice Listener so that it can
-		 * get id's
-		 */
-		
-		tMultiChoiceListener.setTodoAdapter(adapter);
-		
-		listView.setOnItemClickListener(new OnItemClickListener() {
+		//Multiple modal may take over the LongClickListener
+		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		//However, this line lets people start the CAB many times.
+		//listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+		getListView().setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -94,13 +104,6 @@ public class TodoList extends ListActivity {
 				PackData();
 			}
 		});
-		
-		
-		//Multiple modal may take over the LongClickListener
-		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-		//However, this line lets people start the CAB many times.
-		//listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-		
 		getListView().setMultiChoiceModeListener(tMultiChoiceListener);
 		getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
@@ -109,17 +112,34 @@ public class TodoList extends ListActivity {
 				// TODO Auto-generated method stub
 				
 				view.setSelected(true);
-				Log.w("onItemLongClick Listener", "Got here");
+				Log.w("onItemLongClick Listener Got here", String.valueOf(showingArchived));
 				TodoList.this.startActionMode(tMultiChoiceListener);
 			
 				return true;
 			}
 			
 		});
-		//getListView().getItemAtPosition(position).setBackgroundColor(color)
-		//Debugging to see if the layout works
-		//TodoList.this.startActionMode(tMultiChoiceListener);
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+	}
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
 		
+		/* Need to pass the adapter to our TMultiChoice Listener so that it can
+		 * get id's
+		 */
+		if (showingArchived){
+			this.tMultiChoiceListener.setTodoAdapter(archiveAdapter);
+		} else {
+			this.tMultiChoiceListener.setTodoAdapter(unarchiveAdapter);
+		}
+		onContentChanged();
 		
 	}
 	
@@ -148,26 +168,44 @@ public class TodoList extends ListActivity {
 				openSummaryDialog();
 				break;
 			case R.id.action_email_all:
-				Vector<Integer> allitems = new Vector<Integer>();
-				
-				//Lots of ugly code since BaseAdapter doesn't do hasNext()
-				for (Integer i = 0; i < getListAdapter().getCount(); i++){
-					allitems.add(i);
-				}
-				
-				String emailmessage = ((TodoAdapter)getListAdapter()).getMultipleBodies(allitems); 
-				Intent i = new Intent(Intent.ACTION_SEND);
-				i.setType("message/rfc822");
-				i.putExtra(Intent.EXTRA_TEXT, emailmessage);
-				try {
-					startActivity(Intent.createChooser(i, "Send TODO items"));
-				} catch (android.content.ActivityNotFoundException e){
-					Log.w("Action_email in TodoActivity", "caught ActivityNotFoundException");
-				}
+				emailAllItems();
+				break;
+			case R.id.action_toggle_archive_view:
+				toggleArchiveVIew();
 				break;
 		}
 		
 		return super.onOptionsItemSelected(item);
+	}
+	
+	
+
+	private void toggleArchiveVIew() {
+		Log.d("toggleArchiveView() in activity", "Got here");
+		
+		//Toggle state
+		boolean currentstate = this.showingArchived;
+		this.showingArchived = !currentstate;
+		Log.d("toggleArchive View()", "Current state"+ String.valueOf(showingArchived));
+		//Show a toast so the user knows which mode he's in.
+		String toastext = new String();
+	
+		// Change the action bar icon to brown. Brown is old, and archives are old. Good visual
+		// reminder.
+		if (this.showingArchived){
+			toastext = "Now showing archived items";
+			this.dataFileUsed = this.archivedFile;
+			this.getActionBar().setIcon(R.drawable.ic_launcher_2);
+			setListAdapter(archiveAdapter);
+		} else {
+			toastext = "Now showing unarchived items";
+			this.dataFileUsed = this.unarchivedFile;
+			this.getActionBar().setIcon(R.drawable.ic_launcher);
+			setListAdapter(unarchiveAdapter);
+		}
+		UnPackData(); //Get latest data from file for the current list
+		Toast.makeText(this, toastext, Toast.LENGTH_SHORT).show();
+		((TodoAdapter)getListAdapter()).notifyDataSetChanged();
 	}
 	
 	private void openSummaryDialog() {
@@ -196,12 +234,17 @@ public class TodoList extends ListActivity {
 	
 	private boolean UnPackData() {
 		FileBasedDataStore fbds = new FileBasedDataStore(TodoList.this);
-		ArrayList<TItem> temparray = fbds.UnPackData();
+		
+		ArrayList<TItem> temparray = fbds.UnPackData(dataFileUsed);
 		if (temparray == null){
 			Log.e("Unpack Wrapper", "Array returned was null. Using old data");
 			return false;
 		} else {
-			todoarray = temparray;
+			if (showingArchived){
+				archived = temparray;
+			} else {
+				unarchived = temparray;
+			}
 			return true;
 		}
 		
@@ -210,8 +253,10 @@ public class TodoList extends ListActivity {
 	private boolean PackData() {
 		//Instantiate a FileBasedDataStore to handle this for us.
 		FileBasedDataStore fbds = new FileBasedDataStore(TodoList.this);
-		return fbds.PackData(todoarray);
-		
+		//Pack all the data
+			return fbds.PackData(archived, archivedFile) &&
+			fbds.PackData(unarchived, unarchivedFile);
+			
 	}
 
 	public void addItem(AddItemDialogFragment aidf) {
@@ -220,9 +265,48 @@ public class TodoList extends ListActivity {
 		
 		Dialog d = aidf.getDialog();
 		EditText b = (EditText) d.findViewById(R.id.AddItem_editText);
-		this.todoarray.add(new TItem(b.getText().toString(), false, false));
+		if (this.showingArchived){
+			Log.d("AddItem archived", "adding item");
+			archiveAdapter.add(new TItem(b.getText().toString(), false, true));
+		} else {
+			unarchiveAdapter.add(new TItem(b.getText().toString(), false, false));
+
+		}
+		((TodoAdapter)getListAdapter()).notifyDataSetChanged();
 		PackData();
 		
+	}
+	
+	
+	private void emailAllItems() {
+		Vector<Integer> allarchiveditems = new Vector<Integer>();
+		
+		//Lots of ugly code since BaseAdapter doesn't do hasNext()
+		for (Integer i = 0; i < archiveAdapter.getCount(); i++){
+			allarchiveditems.add(i);
+		}
+		
+		Vector<Integer> allunarchiveditems = new Vector<Integer>();
+		
+		//Lots of ugly code since BaseAdapter doesn't do hasNext()
+		for (Integer i = 0; i < unarchiveAdapter.getCount(); i++){
+			allunarchiveditems.add(i);
+		}
+		
+		String emailmessage = "Archived Items: \n ========== \n" +
+				((TodoAdapter)archiveAdapter).getAllBodies(allarchiveditems) + 
+				         "\n Unarchived Items: \n ========== \n" +
+				((TodoAdapter)unarchiveAdapter).getAllBodies(allunarchiveditems);
+		
+		
+		Intent i = new Intent(Intent.ACTION_SEND);
+		i.setType("message/rfc822");
+		i.putExtra(Intent.EXTRA_TEXT, emailmessage);
+		try {
+			startActivity(Intent.createChooser(i, "Send TODO items"));
+		} catch (android.content.ActivityNotFoundException e){
+			Log.w("Action_email in TodoActivity", "caught ActivityNotFoundException");
+		}
 	}
 
 }

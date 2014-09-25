@@ -9,7 +9,12 @@
           android:visible="true"
           android:showAsAction="ifRoom"  />
    
-    
+    <item
+        android:id="@+id/action_toggle_archive_view"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="View Archived Items"
+        />
  
     <item
         android:id="@+id/action_email_all"

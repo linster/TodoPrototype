@@ -6,8 +6,8 @@ import com.example.smtd.TItem;
 
 public abstract class ItemDataStore {
 
-	public abstract ArrayList<TItem> UnPackData();
-	public abstract boolean PackData(ArrayList<TItem> source);
+	public abstract ArrayList<TItem> UnPackData(String filename);
+	public abstract boolean PackData(ArrayList<TItem> source, String filename);
 	
 	
 }

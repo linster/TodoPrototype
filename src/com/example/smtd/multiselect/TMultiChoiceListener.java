@@ -9,6 +9,7 @@ import java.util.Vector;
 import com.example.smtd.R;
 import com.example.smtd.TItem;
 import com.example.smtd.TodoAdapter;
+import com.example.smtd.datahandler.FileBasedDataStore;
 
 
 import android.content.Intent;
@@ -29,15 +30,20 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 	private HashMap<Integer, Boolean> selectedpositions = new HashMap<Integer, Boolean>();
 	
 	
-	private TodoAdapter adapter;
-
+	private TodoAdapter adapter; //One of archiveadaper / unarchive adapter
+	private TodoAdapter otheradapter; //One of unarchive adapter // archive adapter
 	
 	
-	public void setTodoAdapter(TodoAdapter a) {
+	public void setTodoAdapter(TodoAdapter a, TodoAdapter o) {
 		if (a == null) {
-			throw new NullPointerException("Adapter passed to TodoAdapter was null");
+			throw new NullPointerException("Adapter passed to tMultiChoice listener was null");
 		}
+		if (o == null) {
+			throw new NullPointerException("Other adapter passed to tMultiChoice listener was null");
+		}
+		
 		this.adapter = a;
+		this.otheradapter = o;
 		
 	}
 	
@@ -95,9 +101,22 @@ public class TMultiChoiceListener implements MultiChoiceModeListener {
 				for (Map.Entry<Integer, Boolean> entry : selectedpositions.entrySet()){
 					if (entry.getValue()){ 
 						//Item in selected positions map and actually selected (v = true)
+						//Swap to other adapter.
+						try{
 						TItem archiveitem = adapter.getItem(entry.getKey());
+						archiveitem.setSelected(false);
 						boolean currentArchiveVal = archiveitem.GetArchive();
 						archiveitem.SetArchive(!currentArchiveVal);
+						
+						adapter.remove(archiveitem);
+						otheradapter.add(archiveitem);
+						} catch (IndexOutOfBoundsException e) {
+							Log.e("tmMultiChoiceListener", "Index out of bounds exception");
+							Log.e("tmMultiChoiceListener", "");
+						}
+						otheradapter.notifyDataSetChanged();
+						
+						
 					}
 				}
 				adapter.notifyDataSetChanged();

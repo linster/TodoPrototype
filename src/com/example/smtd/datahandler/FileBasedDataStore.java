@@ -16,6 +16,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.smtd.TItem;
+import com.example.smtd.TodoAdapter;
 
 public class FileBasedDataStore extends ItemDataStore {
 
@@ -87,7 +88,7 @@ public class FileBasedDataStore extends ItemDataStore {
 		 */
 		// http://stackoverflow.com/questions/8887197/reliably-convert-any-object-to-string-and-then-back-again
 		// Creative Commons Attribution Share Alike license for the code
-		
+		Log.d("FBDS pack data", source.toString());
 		byte[] SerializedList;
 		
 		try { 
@@ -117,7 +118,6 @@ public class FileBasedDataStore extends ItemDataStore {
 		}
 	}
 
-	
 	
 	
 }

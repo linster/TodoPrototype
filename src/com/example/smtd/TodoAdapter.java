@@ -2,6 +2,7 @@ package com.example.smtd;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -94,7 +95,7 @@ public class TodoAdapter extends ArrayAdapter<TItem> {
 		}
 		return returnstring;
 	}
-	
+
 
 	
 }

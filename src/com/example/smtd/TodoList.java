@@ -43,8 +43,8 @@ public class TodoList extends ListActivity {
 	
 	//String that holds which file we're using for data
 	private String dataFileUsed = new String();
-	final private String unarchivedFile = "unarchived";
-	final private String archivedFile = "archived";
+	final static public String unarchivedFile = "unarchived";
+	final static public String archivedFile = "archived";
 	
 	
 	//Adapters for both lists
@@ -132,13 +132,17 @@ public class TodoList extends ListActivity {
 	protected void onResume(){
 		super.onResume();
 		
+		//Clear the list and get data from filesystem
+		//((TodoAdapter)getListAdapter()).clear();
+		//UnPackData();
+		
 		/* Need to pass the adapter to our TMultiChoice Listener so that it can
 		 * get id's
 		 */
 		if (showingArchived){
-			this.tMultiChoiceListener.setTodoAdapter(archiveAdapter);
+			this.tMultiChoiceListener.setTodoAdapter(archiveAdapter, unarchiveAdapter);
 		} else {
-			this.tMultiChoiceListener.setTodoAdapter(unarchiveAdapter);
+			this.tMultiChoiceListener.setTodoAdapter(unarchiveAdapter, archiveAdapter);
 		}
 		
 	}
@@ -159,6 +163,7 @@ public class TodoList extends ListActivity {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
+		PackData();
 		int id = item.getItemId();
 		switch (id) {
 			case R.id.action_add_item:
@@ -194,13 +199,13 @@ public class TodoList extends ListActivity {
 		// reminder.
 		if (this.showingArchived){
 			toastext = "Now showing archived items";
-			tMultiChoiceListener.setTodoAdapter(archiveAdapter);
+			tMultiChoiceListener.setTodoAdapter(archiveAdapter, unarchiveAdapter);
 			this.dataFileUsed = this.archivedFile;
 			this.getActionBar().setIcon(R.drawable.ic_launcher_2);
 			setListAdapter(archiveAdapter);
 		} else {
 			toastext = "Now showing unarchived items";
-			tMultiChoiceListener.setTodoAdapter(unarchiveAdapter);
+			tMultiChoiceListener.setTodoAdapter(unarchiveAdapter, archiveAdapter);
 			this.dataFileUsed = this.unarchivedFile;
 			this.getActionBar().setIcon(R.drawable.ic_launcher);
 			setListAdapter(unarchiveAdapter);
@@ -237,19 +242,19 @@ public class TodoList extends ListActivity {
 	private boolean UnPackData() {
 		FileBasedDataStore fbds = new FileBasedDataStore(TodoList.this);
 		
-		ArrayList<TItem> temparray = fbds.UnPackData(dataFileUsed);
-		
-		if (temparray == null){
+		ArrayList<TItem> arcarray = fbds.UnPackData(archivedFile);
+		ArrayList<TItem> unarcparray = fbds.UnPackData(unarchivedFile);
+		if (arcarray == null || unarcparray == null){
 			Log.e("Unpack Wrapper", "Array returned was null. Using old data");
 			return false;
 		} else {
-			if (showingArchived){
+			
 				archiveAdapter.clear();
-				archiveAdapter.addAll(temparray);
-			} else {
+				archiveAdapter.addAll(arcarray);
+	
 				unarchiveAdapter.clear();
-				unarchiveAdapter.addAll(temparray);
-			}
+				unarchiveAdapter.addAll(unarcparray);
+			
 			
 			return true;
 		}
@@ -265,6 +270,9 @@ public class TodoList extends ListActivity {
 		
 		
 		//Pack all the data
+		//ArrayList may not match what data is in the adapter. Need to make a method that takes an adapter,
+		//generates array list, and then packs it.
+		Log.e("Got to PackData() in Activity", "");
 			a = fbds.PackData(archived, archivedFile);
 			b = fbds.PackData(unarchived, unarchivedFile);
 			return a&&b;

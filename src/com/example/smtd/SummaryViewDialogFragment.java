@@ -65,7 +65,7 @@ public class SummaryViewDialogFragment extends DialogFragment {
 		ListAdapter archiveAdapter = ((TodoList)getActivity()).archiveAdapter;
 		ListAdapter unArchiveAdapter = ((TodoList)getActivity()).unarchiveAdapter;
 		
-		for (int position = 0; position < archiveAdapter.getCount(); position++){
+		for (int position = 0; position < unArchiveAdapter.getCount() - 1; position++){
 			if ( ((TItem)unArchiveAdapter.getItem(position)).GetCheck()){
 				uchecked++;
 			} else {
@@ -75,7 +75,7 @@ public class SummaryViewDialogFragment extends DialogFragment {
 		
 		archived = archiveAdapter.getCount();
 		
-		for (int position = 0; position < unArchiveAdapter.getCount(); position++){
+		for (int position = 0; position < archiveAdapter.getCount() - 1; position++){
 			if ( ((TItem)archiveAdapter.getItem(position)).GetCheck()){
 				ar_checked++;
 			} else {

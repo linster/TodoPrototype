@@ -91,8 +91,6 @@ public class TItem implements Serializable {
 		}
 	
 
-		/* Serialization functions */
-		/* http://www.onjava.com/pub/a/onjava/excerpt/JavaRMI_10/?page=3 */
-		
+
 		
 }

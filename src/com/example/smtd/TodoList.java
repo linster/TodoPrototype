@@ -300,9 +300,13 @@ public class TodoList extends ListActivity {
 		EditText b = (EditText) d.findViewById(R.id.AddItem_editText);
 		if (this.showingArchived){
 			Log.d("AddItem archived", "adding item");
-			archiveAdapter.add(new TItem(b.getText().toString(), false, true));
+			TItem newItem = new TItem(b.getText().toString(), false, true);
+			archiveAdapter.add(newItem);
+			//archived.add(newItem);
 		} else {
-			unarchiveAdapter.add(new TItem(b.getText().toString(), false, false));
+			TItem newItem = new TItem(b.getText().toString(), false, false);
+			unarchiveAdapter.add(newItem);
+			//unarchived.add(newItem);
 
 		}
 		((TodoAdapter)getListAdapter()).notifyDataSetChanged();

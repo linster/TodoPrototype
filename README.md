@@ -37,6 +37,7 @@ Application Documentation
 ========================
 
 -UML diagrams. UML diagrams are provided
+
 -APK file. APK file is provided.
 
 Basic Use
@@ -47,3 +48,18 @@ Basic Use
  - In the settings menu, the "Toggle Archive View" option toggles between the unarchived list and the archived list. 
  - In this menu, Email All Items lets you send all (both archived and unarchived) items.
  - Summarize items shows the required summary counts.
+
+Things not immediately obvious from the UML Diagram
+====================================================
+-tMultiChoiceListener takes in two adapters (adapter, otheradapter). When the Activity (called TodoList) is in 
+ unarchived mode, the instance of TMultiChoiceListener is set with setTodoAdapter(unarchived, archived) adapters.
+ When the mode of the application is toggled, toggleArchiveView() changes which adapter is bound to the ListView. 
+ It also sets setTodoAdapter(archived, unarchived).
+ 
+ -tMultiChoiceListener, upon the archive/unarchive action button clicked, moves the TItem from adapter to 
+ otheradapter. Depending on how its member variables are set up, this has the effect of archiving or unarchiving 
+ the item. Next time I'm using fragments to change the view.
+ 
+ -TItem has an isSelected boolean. This refers to whether or not its selected in the multi chooser. This is probably
+ bad OO. I should have made another adapter with observers to the two adapters containing data.
+

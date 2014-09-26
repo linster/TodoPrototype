@@ -100,7 +100,8 @@ public class FileBasedDataStore extends ItemDataStore {
 		 *  it to a shared preferences file.
 		 */
 		
-		/* http://beginnersbook.com/2013/12/how-to-serialize-arraylist-in-java/ */
+		/* Referenced, but no code used from:
+		 * http://beginnersbook.com/2013/12/how-to-serialize-arraylist-in-java/ */
 		
 		
 		/* Need to serialize an object to a string 
